@@ -5,26 +5,15 @@ public partial class Player : CharacterBody3D
 {
     [ExportGroup("RequiredNodes")]
     [Export]
-    private AnimationPlayer animationPlayer;
+    public AnimationPlayer animationPlayer;
 
     [Export]
-    private Sprite3D characterSprite3D;
+    public Sprite3D characterSprite3D;
 
-    private Vector2 direction = new();
+    [Export]
+    public StateMachine stateMachine;
 
-    public override void _Ready()
-    {
-        animationPlayer.Play(GameConstants.ANIM_IDLE);
-    }
-
-    public override void _PhysicsProcess(double delta)
-    {
-        Velocity = new(direction.X, 0f, direction.Y);
-        Velocity *= 5;
-
-        MoveAndSlide();
-        Flip();
-    }
+    public Vector2 direction = new();
 
     public override void _Input(InputEvent @event)
     {
@@ -34,17 +23,9 @@ public partial class Player : CharacterBody3D
             GameConstants.INPUT_MOVE_FORWARD,
             GameConstants.INPUT_MOVE_BACKWARD
         );
-        if (direction == Vector2.Zero)
-        {
-            animationPlayer.Play(GameConstants.ANIM_IDLE);
-        }
-        else
-        {
-            animationPlayer.Play(GameConstants.ANIM_MOVE);
-        }
     }
 
-    private void Flip()
+    public void Flip()
     {
         bool isNotMovingHorizontally = Velocity.X == 0;
 

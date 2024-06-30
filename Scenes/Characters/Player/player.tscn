@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://b4kxk0jybg8pq"]
+[gd_scene load_steps=46 format=3 uid="uid://b4kxk0jybg8pq"]
 
 [ext_resource type="Texture2D" uid="uid://bcbhx0pyxuidy" path="res://Assets/Sprites/Characters/Player/Running/Running_001.png" id="1_nhng7"]
 [ext_resource type="Texture2D" uid="uid://pu510hrguttd" path="res://Assets/Sprites/Characters/Player/Idle Blinking/Idle Blinking_000.png" id="1_qnahd"]
@@ -31,6 +31,33 @@
 [ext_resource type="Texture2D" uid="uid://dqi5d1psbsw2m" path="res://Assets/Sprites/Characters/Player/Running/Running_009.png" id="28_whx3x"]
 [ext_resource type="Texture2D" uid="uid://oi0437a7on4h" path="res://Assets/Sprites/Characters/Player/Running/Running_010.png" id="29_u511k"]
 [ext_resource type="Texture2D" uid="uid://dfry4qfunxlb8" path="res://Assets/Sprites/Characters/Player/Running/Running_011.png" id="30_07d5a"]
+[ext_resource type="Texture2D" uid="uid://bfgap1dgk2m2q" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_000.png" id="32_2n36j"]
+[ext_resource type="Script" path="res://Scripts/Characters/Player/PlayerIdleState.cs" id="32_es0b2"]
+[ext_resource type="Script" path="res://Scripts/Characters/Player/PlayerMoveState.cs" id="33_85oua"]
+[ext_resource type="Texture2D" uid="uid://cphbl88hoba01" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_001.png" id="33_k8poa"]
+[ext_resource type="Script" path="res://Scripts/Characters/StateMachine.cs" id="34_1md4p"]
+[ext_resource type="Texture2D" uid="uid://bsvq4a2l46uoh" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_002.png" id="34_4rwj0"]
+[ext_resource type="Texture2D" uid="uid://db16y3xck6i1u" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_003.png" id="35_f1nnt"]
+[ext_resource type="Texture2D" uid="uid://3b223k3accfk" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_004.png" id="36_04cyy"]
+[ext_resource type="Texture2D" uid="uid://bn5burqe21h1l" path="res://Assets/Sprites/Characters/Player/Sliding/Sliding_005.png" id="37_yd1cq"]
+[ext_resource type="Script" path="res://Scripts/Characters/Player/PlayerDashState.cs" id="41_ytpfv"]
+
+[sub_resource type="Animation" id="Animation_s2cpq"]
+resource_name = "Dash"
+length = 1.00002
+step = 0.166667
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite3D:texture")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.166667, 0.333333, 0.5, 0.666667, 0.833333),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [ExtResource("32_2n36j"), ExtResource("33_k8poa"), ExtResource("34_4rwj0"), ExtResource("35_f1nnt"), ExtResource("36_04cyy"), ExtResource("37_yd1cq")]
+}
 
 [sub_resource type="Animation" id="Animation_5i8t7"]
 resource_name = "Idle"
@@ -68,20 +95,41 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_53fn8"]
 _data = {
+"Dash": SubResource("Animation_s2cpq"),
 "Idle": SubResource("Animation_5i8t7"),
 "Move": SubResource("Animation_x8toq")
 }
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("animationPlayer", "characterSprite3D")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("animationPlayer", "characterSprite3D", "stateMachine")]
 script = ExtResource("1_uiw2f")
 animationPlayer = NodePath("AnimationPlayer")
 characterSprite3D = NodePath("Sprite3D")
+stateMachine = NodePath("StateMachine")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 texture_filter = 2
-texture = ExtResource("1_qnahd")
+texture = ExtResource("34_4rwj0")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_53fn8")
 }
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("currentState", "states")]
+script = ExtResource("34_1md4p")
+currentState = NodePath("IdleState")
+states = [NodePath("IdleState"), NodePath("MoveState"), NodePath("DashState")]
+
+[node name="IdleState" type="Node" parent="StateMachine"]
+script = ExtResource("32_es0b2")
+
+[node name="MoveState" type="Node" parent="StateMachine"]
+script = ExtResource("33_85oua")
+
+[node name="DashState" type="Node" parent="StateMachine" node_paths=PackedStringArray("dashTimer")]
+script = ExtResource("41_ytpfv")
+dashTimer = NodePath("Timer")
+
+[node name="Timer" type="Timer" parent="StateMachine/DashState"]
+wait_time = 0.4
+one_shot = true

@@ -100,11 +100,11 @@ _data = {
 "Move": SubResource("Animation_x8toq")
 }
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("animationPlayer", "characterSprite3D", "stateMachine")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("AnimationPlayer", "CharacterSprite3D", "StateMachine")]
 script = ExtResource("1_uiw2f")
-animationPlayer = NodePath("AnimationPlayer")
-characterSprite3D = NodePath("Sprite3D")
-stateMachine = NodePath("StateMachine")
+AnimationPlayer = NodePath("AnimationPlayer")
+CharacterSprite3D = NodePath("Sprite3D")
+StateMachine = NodePath("StateMachine")
 
 [node name="Sprite3D" type="Sprite3D" parent="."]
 texture_filter = 2
@@ -125,10 +125,12 @@ script = ExtResource("32_es0b2")
 
 [node name="MoveState" type="Node" parent="StateMachine"]
 script = ExtResource("33_85oua")
+speed = 4.474
 
 [node name="DashState" type="Node" parent="StateMachine" node_paths=PackedStringArray("dashTimer")]
 script = ExtResource("41_ytpfv")
 dashTimer = NodePath("Timer")
+speed = 15.0
 
 [node name="Timer" type="Timer" parent="StateMachine/DashState"]
 wait_time = 0.4

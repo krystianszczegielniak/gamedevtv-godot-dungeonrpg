@@ -5,13 +5,13 @@ public partial class Player : CharacterBody3D
 {
     [ExportGroup("RequiredNodes")]
     [Export]
-    public AnimationPlayer animationPlayer;
+    public AnimationPlayer AnimationPlayer { get; private set; }
 
     [Export]
-    public Sprite3D characterSprite3D;
+    public Sprite3D CharacterSprite3D { get; private set; }
 
     [Export]
-    public StateMachine stateMachine;
+    public StateMachine StateMachine { get; private set; }
 
     public Vector2 direction = new();
 
@@ -33,6 +33,6 @@ public partial class Player : CharacterBody3D
             return;
 
         bool isMovingLeft = Velocity.X < 0;
-        characterSprite3D.FlipH = isMovingLeft;
+        CharacterSprite3D.FlipH = isMovingLeft;
     }
 }

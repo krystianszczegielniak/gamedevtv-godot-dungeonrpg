@@ -1,20 +1,17 @@
 using Godot;
 
-public partial class PlayerDashState : Node
+public partial class PlayerDashState : PlayerState
 {
     [Export]
     private Timer dashTimer;
 
-    [Export]
-    private float speed = 30f;
-
-    private Player characterNode;
+    [Export(PropertyHint.Range, "0,20,0.1")]
+    private float speed = 10f;
 
     public override void _Ready()
     {
-        characterNode = GetOwner<Player>();
+        base._Ready();
         dashTimer.Timeout += HandleDashTimeout;
-        SetPhysicsProcess(false);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -23,34 +20,25 @@ public partial class PlayerDashState : Node
         characterNode.Flip();
     }
 
-    public override void _Notification(int what)
+    protected override void EnterState()
     {
-        base._Notification(what);
+        characterNode.AnimationPlayer.Play(GameConstants.ANIM_DASH);
+        characterNode.Velocity = new(characterNode.direction.X, 0f, characterNode.direction.Y);
 
-        if (what == 5001)
+        if (characterNode.Velocity == Vector3.Zero)
         {
-            SetPhysicsProcess(true);
-            characterNode.animationPlayer.Play(GameConstants.ANIM_DASH);
-            characterNode.Velocity = new(characterNode.direction.X, 0f, characterNode.direction.Y);
-            if (characterNode.Velocity == Vector3.Zero)
-            {
-                characterNode.Velocity = characterNode.characterSprite3D.FlipH
-                    ? Vector3.Left
-                    : Vector3.Right;
-            }
-            characterNode.Velocity *= speed;
+            characterNode.Velocity = characterNode.CharacterSprite3D.FlipH
+                ? Vector3.Left
+                : Vector3.Right;
+        }
 
-            dashTimer.Start();
-        }
-        if (what == 5002)
-        {
-            SetPhysicsProcess(false);
-        }
+        characterNode.Velocity *= speed;
+        dashTimer.Start();
     }
 
     private void HandleDashTimeout()
     {
         characterNode.Velocity = Vector3.Zero;
-        characterNode.stateMachine.SwitchState<PlayerIdleState>();
+        characterNode.StateMachine.SwitchState<PlayerIdleState>();
     }
 }

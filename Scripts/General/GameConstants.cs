@@ -17,3 +17,10 @@ public partial class GameConstants
     public const string INPUT_MOVE_RIGHT = "MoveRight";
     public const string INPUT_DASH = "Dash";
 }
+
+public partial class GameConstants
+{
+    // Notifications
+    public const int NOTIFICATION_ENTER_STATE = 5001;
+    public const int NOTIFICATION_EXIT_STATE = 5002;
+}

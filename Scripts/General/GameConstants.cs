@@ -6,6 +6,11 @@ public partial class GameConstants
     public const string ANIM_IDLE = "Idle";
     public const string ANIM_MOVE = "Move";
     public const string ANIM_DASH = "Dash";
+    public const string ENEMY_ANIM_WALKING = "Walking";
+    public const string ENEMY_ANIM_DYING = "Dying";
+    public const string ENEMY_ANIM_HURT = "Hurt";
+    public const string ENEMY_ANIM_IDLE = "Idle";
+    public const string ENEMY_ANIM_SLASHING = "Slashing";
 }
 
 public partial class GameConstants

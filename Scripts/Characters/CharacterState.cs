@@ -23,10 +23,13 @@ public abstract partial class CharacterState : Node
         }
         if (what == GameConstants.NOTIFICATION_EXIT_STATE)
         {
+            ExitState();
             SetPhysicsProcess(false);
             SetProcessInput(false);
         }
     }
 
-    protected abstract void EnterState();
+    protected virtual void EnterState() { }
+
+    protected virtual void ExitState() { }
 }
